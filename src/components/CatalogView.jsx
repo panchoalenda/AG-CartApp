@@ -15,7 +15,7 @@ const CatalogView = ({handler}) => {
                 {products.map((p) => (
                     <div className="col-4 my-2" key={p.id} >
                         <ProductCardView
-                        handler={handler}
+                        handler={handler} //Función que está en el padre para agregar un item
                         id={p.id}
                         name={p.name}
                         descrption={p.descrption}
