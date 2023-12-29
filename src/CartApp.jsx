@@ -14,14 +14,14 @@ import itemsReducer from "./reducer/itemsReducer";
 ]}*/
 
 /*Con el parse convertimos desde String a objeto, es decir revierte lo que pasamos a string */
-const initialCartItems = JSON.parse(sessionStorage.getItem('cart')) || []; 
+const initialCartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
 
 
 const CartApp = () => {
 
     const products = getProducts();
 
-    /* SIN USAR useReduce
+    /* ********** SIN USAR useReduce **********
     const [cartItems, setCartItems] = useState(initialCartItems)
 
     const handlerAddProductCart = (product) => {
@@ -72,21 +72,59 @@ const CartApp = () => {
     }
 */
 
-const [cartItems, dispatch] = useReducer(itemsReducer, initialCartItems);
+
+    /* ********** USANDO useReduce ********** */
+
+    const [cartItems, dispatch] = useReducer(itemsReducer, initialCartItems);
+    //cartItems: Arreglo con los valores
+    //dispatch: Función que despacha
+    //itemsReducer: Función reductora
+    //initialCartItems: valores iniciales
+
+
+    //Agregar o actualizar carro de compra
+    const handlerAddProductCart = (product) => {
+
+        const ifExistItem = cartItems.find((i) => i.product.id === product.id); //Si existe el ID, obtenemos el producto
+
+        if (ifExistItem) {
+            dispatch(
+                {
+                    type: 'updateProductCart',
+                    payload: product,
+                }
+            );
+        } else {
+            dispatch(
+                {
+                    type: 'addProductCart',
+                    payload: product
+                }
+            );
+        }
+    }
+
+    //Eliminamos items de carro de compra
+    const handlerDeleteProduct = (id) => {
+        dispatch(
+            {
+                type: 'deleteProductCart',
+                payload: id,
+            }
+        );
+    }
+
 
     return (
         <>
-            
-
             <div className="container my-4">
-<h3>Cart App</h3>
+                <h3>Cart App</h3>
                 <CatalogView handler={handlerAddProductCart} />
                 {cartItems?.length <= 0 || (  //Si es menor a cero no muestra nada, ó si tiene que muestre lo que está en el div
                     <div className="my-4 w-50">
                         <CartView products={products} items={cartItems} handlerDeleteProduct={handlerDeleteProduct} />
                     </div>
                 )}
-
             </div>
         </>
     )
